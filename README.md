@@ -23,8 +23,8 @@ A simple Notes app built with React, React Router, Bootstrap, and `localStorage`
 ### 📦 Install & Run
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/notes-crud-app.git
-cd vertex-notes-app
+git clone git@github.com:apalshah/apals_notes_app.git
+cd apals-notes-app
 npm install
 npm run dev
 ```

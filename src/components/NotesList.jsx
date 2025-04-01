@@ -1,35 +1,53 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import { formatDate } from "../utils/formatter";
+import { useNavigate } from "react-router-dom";
 
-const NotesList = ({ notes }) => (
-  <div className="p-3">
-    {notes.length === 0 ? (
-      <p>No notes available.</p>
-    ) : (
-      <ul className="list-group">
-        {notes.map((note) => (
-          <li
-            key={note.id}
-            className="list-group-item d-flex justify-content-between align-items-center"
-          >
-            <div className="d-flex flex-column">
-              <span className="fw-semibold">{note.title}</span>
-              <small className="text-muted">{formatDate(note.createdTime)}</small>
-            </div>
-            <Link
-              to={`/note/${note.id}`}
-              className="btn btn-sm btn-outline-secondary"
-              aria-label={`Edit note titled ${note.title}`}
-              title="Edit"
+const NotesList = ({ notes, onDelete }) => {
+  const navigate = useNavigate();
+
+  return (
+    <div className="p-3">
+      {notes.length === 0 ? (
+        <p>No notes available.</p>
+      ) : (
+        <ul className="list-group">
+          {notes.map((note) => (
+            <li
+              key={note.id}
+              className="list-group-item d-flex justify-content-between align-items-center"
             >
-              ✏️
-            </Link>
-          </li>
-        ))}
-      </ul>
-    )}
-  </div>
-);
+              <div>
+                <strong>{note.title}</strong>
+                <div className="text-muted small">
+                  {formatDate(note.createdTime)}
+                </div>
+              </div>
+
+              <div className="btn-group" role="group">
+                <button
+                  className="btn btn-sm btn-outline-secondary"
+                  onClick={() => navigate(`/notes/${note.id}`)}
+                  title="Edit note"
+                  aria-label={`Edit ${note.title}`}
+                >
+                  ✏️
+                </button>
+
+                <button
+                  className="btn btn-sm btn-outline-danger"
+                  onClick={() => onDelete(note.id)}
+                  title="Delete note"
+                  aria-label={`Delete ${note.title}`}
+                >
+                  🗑️
+                </button>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+};
 
 export default NotesList;

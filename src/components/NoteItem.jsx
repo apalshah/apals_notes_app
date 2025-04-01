@@ -1,6 +1,14 @@
 import React, { useState } from "react";
+import DOMPurify from "dompurify";
 
-const NoteItem = ({ initialNote = {}, onSave, onCancel, submitLabel = "Save" }) => {
+
+const NoteItem = ({
+  initialNote = {},
+  onSave,
+  onCancel,
+  onDelete,
+  submitLabel = "Save",
+}) => {
   const [title, setTitle] = useState(initialNote.title || "");
   const [content, setContent] = useState(initialNote.content || "");
   const [errors, setErrors] = useState({});
@@ -27,13 +35,17 @@ const NoteItem = ({ initialNote = {}, onSave, onCancel, submitLabel = "Save" }) 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!validate()) return;
-
+  
+    const cleanTitle = DOMPurify.sanitize(title.trim());
+    const cleanContent = DOMPurify.sanitize(content.trim());
+  
     onSave({
       ...initialNote,
-      title: title.trim(),
-      content: content.trim(),
+      title: cleanTitle,
+      content: cleanContent,
     });
   };
+  
 
   return (
     <form onSubmit={handleSubmit}>
@@ -96,7 +108,11 @@ const NoteItem = ({ initialNote = {}, onSave, onCancel, submitLabel = "Save" }) 
       </div>
 
       <div className="d-flex justify-content-end gap-2">
-        <button type="button" className="btn btn-secondary" onClick={onCancel}>
+        <button
+          type="button"
+          className="btn btn-secondary"
+          onClick={onCancel}
+        >
           Cancel
         </button>
         <button type="submit" className="btn btn-primary">

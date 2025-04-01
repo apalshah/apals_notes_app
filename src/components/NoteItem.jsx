@@ -1,35 +1,110 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import { formatDate } from "../utils/formatter";
+import React, { useState } from "react";
 
-const NotesList = ({ notes }) => (
-  <div className="p-3">
-    {notes.length === 0 ? (
-      <p>No notes available.</p>
-    ) : (
-      <ul className="list-group">
-        {notes.map((note) => (
-          <li
-            key={note.id}
-            className="list-group-item d-flex justify-content-between align-items-center"
+const NoteItem = ({ initialNote = {}, onSave, onCancel, submitLabel = "Save" }) => {
+  const [title, setTitle] = useState(initialNote.title || "");
+  const [content, setContent] = useState(initialNote.content || "");
+  const [errors, setErrors] = useState({});
+
+  const TITLE_MAX_LENGTH = 50;
+  const CONTENT_MAX_LENGTH = 200;
+
+  const validate = () => {
+    const errs = {};
+    if (!title.trim()) {
+      errs.title = "Title is required.";
+    } else if (title.length > TITLE_MAX_LENGTH) {
+      errs.title = `Title must be under ${TITLE_MAX_LENGTH} characters.`;
+    }
+
+    if (content.length > CONTENT_MAX_LENGTH) {
+      errs.content = `Content must be under ${CONTENT_MAX_LENGTH} characters.`;
+    }
+
+    setErrors(errs);
+    return Object.keys(errs).length === 0;
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!validate()) return;
+
+    onSave({
+      ...initialNote,
+      title: title.trim(),
+      content: content.trim(),
+    });
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <div className="mb-3">
+        <label htmlFor="note-title" className="form-label">
+          Title
+        </label>
+        <input
+          type="text"
+          id="note-title"
+          className={`form-control ${errors.title ? "is-invalid" : ""}`}
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="Note title"
+          maxLength={TITLE_MAX_LENGTH}
+        />
+        <div className="d-flex justify-content-between">
+          {errors.title ? (
+            <div className="invalid-feedback d-block">{errors.title}</div>
+          ) : (
+            <span className="text-muted" style={{ flex: 1 }}></span>
+          )}
+          <small
+            className={`text-muted ${
+              title.length > TITLE_MAX_LENGTH * 0.9 ? "text-danger" : ""
+            }`}
           >
-            <div className="d-flex flex-column">
-              <span className="fw-semibold">{note.title}</span>
-              <small className="text-muted">{formatDate(note.createdTime)}</small>
-            </div>
-            <Link
-              to={`/note/${note.id}`}
-              className="btn btn-sm btn-outline-secondary"
-              aria-label={`Edit note titled ${note.title}`}
-              title="Edit"
-            >
-              ✏️
-            </Link>
-          </li>
-        ))}
-      </ul>
-    )}
-  </div>
-);
+            {title.length}/{TITLE_MAX_LENGTH}
+          </small>
+        </div>
+      </div>
 
-export default NotesList;
+      <div className="mb-3">
+        <label htmlFor="note-content" className="form-label">
+          Content
+        </label>
+        <textarea
+          id="note-content"
+          className={`form-control ${errors.content ? "is-invalid" : ""}`}
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+          placeholder="Note content"
+          rows="4"
+          maxLength={CONTENT_MAX_LENGTH}
+        />
+        <div className="d-flex justify-content-between">
+          {errors.content ? (
+            <div className="invalid-feedback d-block">{errors.content}</div>
+          ) : (
+            <span className="text-muted" style={{ flex: 1 }}></span>
+          )}
+          <small
+            className={`text-muted ${
+              content.length > CONTENT_MAX_LENGTH * 0.9 ? "text-danger" : ""
+            }`}
+          >
+            {content.length}/{CONTENT_MAX_LENGTH}
+          </small>
+        </div>
+      </div>
+
+      <div className="d-flex justify-content-end gap-2">
+        <button type="button" className="btn btn-secondary" onClick={onCancel}>
+          Cancel
+        </button>
+        <button type="submit" className="btn btn-primary">
+          {submitLabel}
+        </button>
+      </div>
+    </form>
+  );
+};
+
+export default NoteItem;

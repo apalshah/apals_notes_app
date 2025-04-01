@@ -1,3 +1,4 @@
+// src/pages/LoginPage.jsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
@@ -18,12 +19,11 @@ const LoginPage = () => {
       setError("Invalid credentials.");
     }
   };
-  
 
   return (
     <div className="container mt-5" style={{ maxWidth: "400px" }}>
       <h3 className="mb-4">Login</h3>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} data-testid="login-form">
         <div className="mb-3">
           <label className="form-label">Username</label>
           <input
@@ -32,6 +32,7 @@ const LoginPage = () => {
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
+            data-testid="username-input"
           />
         </div>
         <div className="mb-3">
@@ -42,10 +43,19 @@ const LoginPage = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
+            data-testid="password-input"
           />
         </div>
-        {error && <div className="alert alert-danger">{error}</div>}
-        <button type="submit" className="btn btn-primary w-100">
+        {error && (
+          <div className="alert alert-danger" data-testid="error-message">
+            {error}
+          </div>
+        )}
+        <button
+          type="submit"
+          className="btn btn-primary w-100"
+          data-testid="login-button"
+        >
           Login
         </button>
       </form>

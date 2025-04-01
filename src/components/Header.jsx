@@ -1,4 +1,3 @@
-// src/components/Header.jsx
 import React from "react";
 import { Container, Navbar, Button } from "react-bootstrap";
 import { useAuth } from "../context/AuthContext";
@@ -11,7 +10,7 @@ const Header = () => {
       <Container>
         <Navbar.Brand>Notes App</Navbar.Brand>
         {user && (
-          <Button variant="outline-light" size="sm" onClick={logout}>
+          <Button variant="outline-light" size="sm" onClick={logout} data-testid="logout-btn">
             Logout
           </Button>
         )}

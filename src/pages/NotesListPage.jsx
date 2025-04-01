@@ -47,12 +47,13 @@ const NotesListPage = () => {
 
   return (
     <>
-      <div className="container mt-4">
+      <div className="container mt-4" data-testid="notes-list-page">
         <div className="d-flex justify-content-between align-items-center mb-3">
           <h4>My Notes</h4>
           <button
             className="btn btn-primary"
             onClick={() => setShowCreateModal(true)}
+            data-testid="create-button"
           >
             + Create
           </button>

@@ -38,6 +38,7 @@ const NotesList = ({ notes, onDelete }) => {
                   onClick={() => onDelete(note.id)}
                   title="Delete note"
                   aria-label={`Delete ${note.title}`}
+                  data-testid="delete-btn"
                 >
                   🗑️
                 </button>
